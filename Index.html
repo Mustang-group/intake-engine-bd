@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>60-Second AI Eligibility & Funnel Audit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #090d16; }
+    .chat-scroll::-webkit-scrollbar { width: 4px; }
+    .chat-scroll::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+    @keyframes popIn { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .msg-anim { animation: popIn 0.22s ease-out forwards; }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col items-center py-3 px-2.5 select-none">
+
+  <!-- Stealth Executive Header Bar (No Competitor Buttons Visible) -->
+  <div class="w-full max-w-md bg-slate-900/95 border border-slate-800 rounded-2xl p-3 mb-2.5 shadow-xl">
+    <div class="flex items-center justify-between mb-2">
+      <!-- Secret Co-Founder Switch: Double-tap the green dot area to toggle agencies on your own phone -->
+      <div ondblclick="secretToggle()" class="flex items-center gap-2 cursor-pointer" title="Executive Portal">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+        <span id="exec-target-title" class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+          Pacific Global • Dedicated System
+        </span>
+      </div>
+      <span class="text-[10px] font-semibold bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md border border-slate-700">
+        Private Build v2.4
+      </span>
+    </div>
+
+    <!-- 3-Tab Navigation -->
+    <div class="grid grid-cols-3 gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800/80">
+      <button onclick="switchTab('demo')" id="tab-demo" class="py-1.5 text-[11px] font-bold rounded-lg bg-emerald-500 text-slate-950 shadow transition">
+        💬 AI Demo
+      </button>
+      <button onclick="switchTab('audit')" id="tab-audit" class="py-1.5 text-[11px] font-semibold rounded-lg text-slate-300 hover:text-white transition relative">
+        🔍 Funnel Audit
+        <span class="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-extrabold px-1.5 rounded-full">3 Leaks</span>
+      </button>
+      <button onclick="switchTab('crm')" id="tab-crm" class="py-1.5 text-[11px] font-semibold rounded-lg text-slate-300 hover:text-white transition">
+        📋 Live CRM
+      </button>
+    </div>
+  </div>
+
+  <!-- TAB 1: INTERACTIVE STUDENT AI & VOUCHER GENERATOR -->
+  <div id="view-demo" class="w-full max-w-md bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col h-[650px]">
+    <!-- Agency Top Bar -->
+    <div id="brand-header" class="bg-emerald-800 text-white px-4 py-3 flex items-center justify-between shadow-md">
+      <div class="flex items-center gap-2.5">
+        <div class="relative">
+          <div id="brand-avatar" class="w-10 h-10 rounded-full bg-white text-emerald-900 font-extrabold flex items-center justify-center text-sm shadow">
+            PG
+          </div>
+          <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-emerald-800 rounded-full"></span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1">
+            <h1 id="brand-name" class="font-bold text-sm leading-tight">Pacific Global Network</h1>
+            <svg class="w-4 h-4 text-sky-300 fill-current" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>
+          <p id="brand-subtitle" class="text-[10px] text-emerald-100">Automated Eligibility & Appointment Desk</p>
+        </div>
+      </div>
+      <button onclick="resetChat()" class="text-[11px] bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded-lg font-semibold transition">
+        ↻ Reset
+      </button>
+    </div>
+
+    <!-- Active Ad Library Reference Bar -->
+    <div class="bg-amber-50 border-b border-amber-200 px-3 py-1.5 flex items-center justify-between text-[10px] text-amber-900">
+      <span id="ad-id-banner" class="font-semibold truncate">📢 Ad ID: 24054707220838934 (AU, NZ, UK & Canada)</span>
+      <span class="font-extrabold text-emerald-700 shrink-0 ml-2">⚡ Instant Reply</span>
+    </div>
+
+    <!-- Chat Feed -->
+    <div id="chat-box" class="flex-1 p-3.5 overflow-y-auto chat-scroll space-y-3 bg-[#efeae2]"></div>
+
+    <!-- Interactive Decision Buttons -->
+    <div id="options-box" class="p-3 bg-slate-50 border-t border-slate-200 min-h-[96px] flex flex-col justify-center"></div>
+  </div>
+
+  <!-- TAB 2: FORENSIC WEBSITE & AD AUDIT -->
+  <div id="view-audit" class="hidden w-full max-w-md bg-slate-900 text-slate-100 rounded-3xl shadow-2xl border border-slate-800 p-4 space-y-4">
+    <div class="border-b border-slate-800 pb-3">
+      <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+        Confidential Diagnostic Report
+      </span>
+      <h2 id="audit-headline" class="text-base font-extrabold mt-2 text-white">
+        3 Revenue Leaks Found on pacificglobal.com.bd
+      </h2>
+      <p class="text-[11px] text-slate-400 mt-0.5">
+        Why high-intent students clicking your active Meta ads drop off before booking an office visit:
+      </p>
+    </div>
+
+    <!-- Dynamic Audit Cards -->
+    <div id="audit-cards" class="space-y-2.5"></div>
+
+    <!-- Turnkey Fix & ROI Box -->
+    <div class="bg-gradient-to-br from-emerald-950 to-slate-900 border border-emerald-500/40 rounded-2xl p-3.5 space-y-2">
+      <div class="flex justify-between items-center">
+        <div>
+          <p class="text-[10px] uppercase font-bold tracking-wider text-emerald-400">Same-Day Turnkey Deployment</p>
+          <p class="text-xl font-extrabold text-white">20,000 BDT <span class="text-[11px] font-normal text-slate-400">one-time setup</span></p>
+        </div>
+        <div class="text-right">
+          <p class="text-[10px] text-slate-400">Monthly Retainer</p>
+          <p class="text-xs font-bold text-slate-200">30,000 BDT/mo</p>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-300 leading-relaxed">
+        ✅ <strong class="text-white">Zero-Risk Math:</strong> 1 enrolled visa file yields <strong class="text-emerald-300">1,50,000–3,00,000 BDT</strong> in university commission. Saving just 1 lost night-time lead pays for the entire system 10x over.
+      </p>
+      <button onclick="switchTab('demo')" class="w-full mt-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl shadow transition">
+        ⚡ Test Your Live Solution in Tab 1
+      </button>
+    </div>
+  </div>
+
+  <!-- TAB 3: LIVE COUNSELOR CRM / EMS FEED -->
+  <div id="view-crm" class="hidden w-full max-w-md bg-slate-900 text-slate-100 rounded-3xl shadow-2xl border border-slate-800 p-4 space-y-3.5">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div>
+        <h2 id="crm-title" class="text-sm font-extrabold text-white">Live Pre-Qualified Counselor Desk</h2>
+        <p id="crm-subtitle" class="text-[11px] text-slate-400">Auto-filtered leads routed by branch & eligibility score</p>
+      </div>
+      <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full">
+        24/7 Active
+      </span>
+    </div>
+
+    <div id="crm-feed" class="space-y-2.5"></div>
+
+    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-[11px] text-slate-400 leading-relaxed">
+      💡 <strong class="text-slate-200">How this saves counselor hours:</strong> Unqualified inquiries are filtered out automatically. Your senior counselors in <span id="crm-branch-note" class="text-emerald-400 font-semibold">Sylhet & Dhaka</span> only spend time calling verified students who already have a booked slot.
+    </div>
+  </div>
+
+  <script>
+    const agencyData = {
+      pg: {
+        pageTitle: "Pacific Global Network • AI Intake & Audit",
+        execTitle: "Pacific Global • Dedicated System",
+        name: "Pacific Global Network",
+        short: "PG",
+        headerClass: "bg-emerald-800",
+        subtitle: "Chowhatta (Sylhet) & Gulshan-1 (Dhaka) • Online",
+        adBanner: "📢 Ad ID: 24054707220838934 (AU, NZ, UK & Canada)",
+        waNumber: "8801332555033",
+        crmTitle: "Pacific Global Appointment Queue",
+        crmSubtitle: "Direct feed for Manru Shopping City & Florida Castle",
+        branchNote: "Chowhatta (Sylhet) & Gulshan-1 (Dhaka)",
+        countries: [
+          "🇦🇺 Australia (Feb/July Intake + 2-4yr PSW)",
+          "🇬🇧 UK (Fast-Track Admission)",
+          "🇨🇦 Canada / 🇳🇿 New Zealand"
+        ],
+        branches: [
+          "📍 Sylhet (Manru Shopping City, 3rd Fl, Chowhatta)",
+          "📍 Dhaka HQ (Florida Castle, Road 23/A, Gulshan-1)"
+        ],
+        welcome: "Assalamu Alaikum! 👋 Welcome to **Pacific Global Network** (*Your Better Destination Is Our Priority*).\n\nSaw you clicked our **Australia, NZ, UK & Canada** admission ad! Tap below to check your **Tuition & Scholarship Eligibility** and reserve a 1-on-1 counselor slot:",
+        voucherPerk: "GTE/GST Pre-Assessment + PTE/IELTS Waiver Check + Up to 30% Bursary",
+        tuitionNote: "Est. Tuition: AUD $15,000–$33,000/yr (20 hrs/wk work rights + 2–4 yr PSW)",
+        auditHeadline: "3 Conversion Leaks Found on pacificglobal.com.bd",
+        audits: [
+          {
+            title: "1. Broken Gravity Forms Warning on Booking Page",
+            desc: "On pacificglobal.com.bd/book-an-appointment/, visitors currently see an unconfigured plugin notice: 'Next Steps: Install a Payment Add-On... Important: Delete this tip before you publish the form.'",
+            fix: "We replace this today with an instant interactive WhatsApp & Web Eligibility Engine."
+          },
+          {
+            title: "2. Ad Promotes PTE, But Website Form Blocks PTE",
+            desc: "Your active Facebook Ad (ID: 24054707220838934) promotes 'From IELTS/PTE prep to university selection', but your website dropdown only lists IELTS, TOEFL, GRE, GMAT, SAT—missing PTE & MOI completely.",
+            fix: "Full IELTS, PTE, Duolingo & MOI qualification built directly into the 60-second chat."
+          },
+          {
+            title: "3. 'By Appointment Only' Bottleneck After 8 PM",
+            desc: "Your Sylhet WhatsApp desk operates 'By appointment only'. Students clicking ads between 8 PM and 1 AM wait until the next day and book with competing Zindabazar/Chowhatta agencies first.",
+            fix: "24/7 automated qualification locks the student into a confirmed Chowhatta or Gulshan slot in 45 seconds."
+          }
+        ],
+        sampleLeads: [
+          { name: "Tanvir H.", target: "🇦🇺 Australia (Masters)", stats: "CGPA 3.45 • IELTS 6.5", branch: "Sylhet (Chowhatta)", score: "98% Match", time: "2 mins ago" },
+          { name: "Nusrat J.", target: "🇬🇧 UK (Bachelor)", stats: "HSC GPA 5.0 • PTE 58", branch: "Dhaka (Gulshan-1)", score: "94% Match", time: "14 mins ago" },
+          { name: "Sadia R.", target: "🇨🇦 Canada (PG)", stats: "CGPA 3.20 • IELTS 6.0", branch: "Sylhet (Chowhatta)", score: "91% Match", time: "29 mins ago" }
+        ]
+      },
+      ss: {
+        pageTitle: "Study Solutions Ltd • AI Intake & Audit",
+        execTitle: "Study Solutions • Dedicated System",
+        name: "Study Solutions Ltd",
+        short: "SS",
+        headerClass: "bg-blue-900",
+        subtitle: "Official UK University Representative (140+ Partners)",
+        adBanner: "📢 Ad ID: 27820442920957677 (UK Jan 2027 • £10k Scholarship)",
+        waNumber: "8801604006060",
+        crmTitle: "EMS & Centurion Pre-Qualified Feed",
+        crmSubtitle: "Auto-formatted for Al-Hamra (Sylhet) & Banani (Dhaka)",
+        branchNote: "Al-Hamra Level-9 (Sylhet) & Green AR Tower (Banani)",
+        countries: [
+          "🇬🇧 UK Jan 2027 (Up to £10,000 Scholarship)",
+          "🇬🇧 UK with MOI / Dependent Option",
+          "🇦🇺 Australia / 🇨🇦 Canada / 🇺🇸 USA"
+        ],
+        branches: [
+          "📍 Sylhet (Al-Hamra Level-9, Office 916, Zindabazar)",
+          "📍 Dhaka HQ (Green AR Tower, 2nd Fl, Road 4, Banani)"
+        ],
+        welcome: "Assalamu Alaikum! 👋 Welcome to **Study Solutions Ltd** (*Official Representative of 140+ UK Universities*).\n\nChecking your eligibility for the **UK January 2027 Intake**! Tap below to calculate your **Scholarship Tier (up to £10,000)**, **100% BC IELTS Cashback**, and **24–48hr Offer Letter** eligibility:",
+        voucherPerk: "Up to £10,000 Merit Scholarship + 100% BC IELTS Cashback (Graduate-500) + 48hr Offer Letter",
+        tuitionNote: "Verified Partner Route: Ulster, QA, OIEG, Study Group & 140+ UK Universities",
+        auditHeadline: "3 Conversion Leaks Found on study-solutions.com",
+        audits: [
+          {
+            title: "1. Ad Promises Instant Eligibility, Page Gives Static Form",
+            desc: "Your active UK Jan 2027 Ad (ID: 27820442920957677) says '📩 Let's check your eligibility' for £10,000 scholarships. But study-solutions.com/check-your-eligibility/ is a static callback form where students wait hours.",
+            fix: "Students get an instant £10,000 scholarship tier calculation & voucher in 45 seconds."
+          },
+          {
+            title: "2. 'Lorem Ipsum' Placeholder Text Live on Homepage",
+            desc: "On study-solutions.com under 'Why Choose Study Solutions?', both the 'Study on campus' and 'Our Learning Partners' boxes still show raw 'Lorem Ipsum is simply dummy text...' to students and university delegates.",
+            fix: "We clean up your landing funnel today so your brand matches your 10-year PIEoneer finalist reputation."
+          },
+          {
+            title: "3. Unfiltered Leads Clogging EMS & Centurion CRM",
+            desc: "With 100,000+ applications and 550+ staff, counselors lose valuable hours calling unverified Facebook leads who don't meet CGPA or IELTS/MOI criteria.",
+            fix: "Every Meta Ad lead is auto-scored by CGPA, IELTS 4.5–7.0 / MOI, and routed to Al-Hamra Level 9 or Banani."
+          }
+        ],
+        sampleLeads: [
+          { name: "Mahmudul H.", target: "🇬🇧 UK Jan 2027 (Masters)", stats: "CGPA 3.52 • IELTS 6.5", branch: "Sylhet (Al-Hamra #916)", score: "£10k Tier • 99%", time: "1 min ago" },
+          { name: "Farhana A.", target: "🇬🇧 UK Jan 2027 (MOI)", stats: "BBA CGPA 3.18 • MOI Ready", branch: "Dhaka (Banani Block-F)", score: "£6k Tier • 95%", time: "9 mins ago" },
+          { name: "Rafiqul I.", target: "🇬🇧 UK Foundation/UG", stats: "HSC GPA 4.80 • IELTS 5.5", branch: "Sylhet (Al-Hamra #916)", score: "Eligible • 92%", time: "22 mins ago" }
+        ]
+      }
+    };
+
+    // Determine agency from URL (?id=ss or ?id=pg) or saved localStorage lock
+    const params = new URLSearchParams(window.location.search);
+    const urlId = params.get('id') || params.get('agency');
+    let currentAgency = localStorage.getItem('locked_agency') || 'pg';
+
+    if (urlId === 'ss' || urlId === 'studysolutions') {
+      currentAgency = 'ss';
+      localStorage.setItem('locked_agency', 'ss');
+    } else if (urlId === 'pg' || urlId === 'pacific') {
+      currentAgency = 'pg';
+      localStorage.setItem('locked_agency', 'pg');
+    }
+
+    let state = { country: '', degree: '', english: '', branch: '' };
+
+    // Hidden co-founder toggle (double tap top-left green dot)
+    function secretToggle() {
+      currentAgency = currentAgency === 'pg' ? 'ss' : 'pg';
+      localStorage.setItem('locked_agency', currentAgency);
+      loadAgency(currentAgency);
+    }
+
+    function switchTab(tab) {
+      ['demo', 'audit', 'crm'].forEach(t => {
+        document.getElementById('view-' + t).classList.toggle('hidden', t !== tab);
+        const btn = document.getElementById('tab-' + t);
+        btn.className = t === tab
+          ? 'py-1.5 text-[11px] font-bold rounded-lg bg-emerald-500 text-slate-950 shadow transition relative'
+          : 'py-1.5 text-[11px] font-semibold rounded-lg text-slate-300 hover:text-white transition relative';
+      });
+    }
+
+    function loadAgency(key) {
+      const cfg = agencyData[key];
+      document.title = cfg.pageTitle;
+      document.getElementById('exec-target-title').innerText = cfg.execTitle;
+      document.getElementById('brand-name').innerText = cfg.name;
+      document.getElementById('brand-avatar').innerText = cfg.short;
+      document.getElementById('brand-header').className = `${cfg.headerClass} text-white px-4 py-3 flex items-center justify-between shadow-md`;
+      document.getElementById('brand-subtitle').innerText = cfg.subtitle;
+      document.getElementById('ad-id-banner').innerText = cfg.adBanner;
+      document.getElementById('audit-headline').innerText = cfg.auditHeadline;
+      document.getElementById('crm-title').innerText = cfg.crmTitle;
+      document.getElementById('crm-subtitle').innerText = cfg.crmSubtitle;
+      document.getElementById('crm-branch-note').innerText = cfg.branchNote;
+
+      renderAuditCards(cfg);
+      renderCrmFeed(cfg);
+      resetChat();
+    }
+
+    function renderAuditCards(cfg) {
+      document.getElementById('audit-cards').innerHTML = cfg.audits.map(a => `
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-rose-400">${a.title}</h3>
+            <span class="text-[9px] bg-rose-500/10 text-rose-300 px-2 py-0.5 rounded font-semibold">Live Issue</span>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">${a.desc}</p>
+          <p class="text-[11px] text-emerald-400 font-medium pt-1 border-t border-slate-900">✓ Fix: ${a.fix}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderCrmFeed(cfg) {
+      document.getElementById('crm-feed').innerHTML = cfg.sampleLeads.map(l => `
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 flex items-center justify-between">
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-xs text-white">${l.name}</span>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-full">${l.score}</span>
+            </div>
+            <p class="text-[11px] text-slate-300 font-medium">${l.target} • ${l.stats}</p>
+            <p class="text-[10px] text-slate-500">📍 ${l.branch} • ${l.time}</p>
+          </div>
+          <a href="https://wa.me/${cfg.waNumber}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-2 rounded-xl shrink-0">
+            WhatsApp ↗
+          </a>
+        </div>
+      `).join('');
+    }
+
+    function appendMessage(sender, htmlContent) {
+      const box = document.getElementById('chat-box');
+      const div = document.createElement('div');
+      const formatted = htmlContent
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+
+      if (sender === 'bot') {
+        div.className = 'msg-anim flex justify-start';
+        div.innerHTML = `<div class="bg-white text-slate-800 text-xs p-3 rounded-2xl rounded-tl-none shadow-sm max-w-[88%] leading-relaxed border border-slate-100">${formatted}<div class="text-[9px] text-slate-400 text-right mt-1">AI Intake Engine • Verified</div></div>`;
+      } else {
+        div.className = 'msg-anim flex justify-end';
+        div.innerHTML = `<div class="bg-[#d9fdd3] text-slate-900 text-xs p-2.5 px-3 rounded-2xl rounded-tr-none shadow-sm max-w-[82%] font-semibold">${formatted}<div class="text-[9px] text-emerald-700 text-right mt-0.5">Just now ✓✓</div></div>`;
+      }
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function renderOptions(buttons) {
+      const box = document.getElementById('options-box');
+      box.innerHTML = '<p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 text-center">👇 Tap an option to test the live qualification:</p>';
+      const wrap = document.createElement('div');
+      wrap.className = 'flex flex-wrap gap-1.5 justify-center';
+      buttons.forEach(b => {
+        const btn = document.createElement('button');
+        btn.className = 'bg-white hover:bg-emerald-50 text-slate-900 border border-emerald-400 font-semibold text-[11px] px-3 py-2 rounded-xl shadow-sm transition active:scale-95';
+        btn.innerText = b.label;
+        btn.onclick = b.onClick;
+        wrap.appendChild(btn);
+      });
+      box.appendChild(wrap);
+    }
+
+    function resetChat() {
+      state = { country: '', degree: '', english: '', branch: '' };
+      document.getElementById('chat-box').innerHTML = '';
+      const cfg = agencyData[currentAgency];
+      appendMessage('bot', cfg.welcome);
+      renderOptions(cfg.countries.map(c => ({
+        label: c,
+        onClick: () => stepDegree(c)
+      })));
+    }
+
+    function stepDegree(country) {
+      state.country = country;
+      appendMessage('user', country);
+      setTimeout(() => {
+        appendMessage('bot', `Got it! What is your **latest completed qualification & CGPA/GPA**?`);
+        renderOptions([
+          { label: "🎓 Bachelor Complete (CGPA 3.2 - 3.8+)", onClick: () => stepEnglish("Bachelor Complete (CGPA 3.2+)") },
+          { label: "📘 HSC / A-Level Complete (GPA 4.5 - 5.0)", onClick: () => stepEnglish("HSC Complete (GPA 4.5+)") },
+          { label: "📙 Bachelor / HSC (CGPA 2.6 - 3.1)", onClick: () => stepEnglish("Bachelor/HSC (2.6 - 3.1)") }
+        ]);
+      }, 300);
+    }
+
+    function stepEnglish(degree) {
+      state.degree = degree;
+      appendMessage('user', degree);
+      setTimeout(() => {
+        appendMessage('bot', `What is your current **IELTS / PTE / MOI status**?`);
+        renderOptions([
+          { label: "✅ IELTS 6.0 - 6.5+ Ready", onClick: () => stepBranch("IELTS 6.0 - 6.5+ Ready") },
+          { label: "🎯 PTE 55+ / Duolingo 105+ Ready", onClick: () => stepBranch("PTE / Duolingo Ready") },
+          { label: "📄 Apply with MOI / Need IELTS Cashback Prep", onClick: () => stepBranch("MOI / IELTS Prep Required") }
+        ]);
+      }, 300);
+    }
+
+    function stepBranch(english) {
+      state.english = english;
+      appendMessage('user', english);
+      const cfg = agencyData[currentAgency];
+      setTimeout(() => {
+        appendMessage('bot', `🎉 **Instant Assessment Complete: PRE-QUALIFIED!**\n\nSelect your preferred **${cfg.name}** branch to generate your Priority Scholarship & Spot-Assessment Pass:`);
+        renderOptions(cfg.branches.map(b => ({
+          label: b,
+          onClick: () => stepFinal(b)
+        })));
+      }, 350);
+    }
+
+    function stepFinal(branch) {
+      state.branch = branch;
+      appendMessage('user', branch);
+      const cfg = agencyData[currentAgency];
+      const code = (currentAgency === 'pg' ? 'PG-SYL-' : 'SS-JAN27-') + Math.floor(1000 + Math.random() * 9000);
+
+      setTimeout(() => {
+        const voucherHtml = `
+          <div class="bg-emerald-950 text-white p-3 rounded-xl border border-emerald-500/50 space-y-1.5 mt-1">
+            <div class="flex justify-between items-center border-b border-emerald-800 pb-1">
+              <span class="text-[10px] uppercase font-extrabold text-emerald-400">Priority Eligibility Pass</span>
+              <span class="text-[10px] font-mono bg-emerald-500 text-slate-950 font-bold px-1.5 py-0.5 rounded">${code}</span>
+            </div>
+            <p class="text-[11px] font-bold text-emerald-200">${cfg.voucherPerk}</p>
+            <p class="text-[10px] text-slate-300">• <strong>Route:</strong> ${state.country}</p>
+            <p class="text-[10px] text-slate-300">• <strong>Profile:</strong> ${state.degree} | ${state.english}</p>
+            <p class="text-[10px] text-slate-300">• <strong>Office:</strong> ${state.branch}</p>
+            <p class="text-[9px] text-emerald-400 pt-1">${cfg.tuitionNote}</p>
+          </div>
+        `;
+        appendMessage('bot', `✅ **Your Priority Counseling Slot & Eligibility Voucher is Ready!**${voucherHtml}`);
+
+        const waText = encodeURIComponent(
+          `🔥 *PRE-QUALIFIED STUDENT FILE (${cfg.name})*\n` +
+          `🎟 *Voucher ID:* ${code}\n` +
+          `• *Target:* ${state.country}\n` +
+          `• *Academic:* ${state.degree}\n` +
+          `• *English:* ${state.english}\n` +
+          `• *Branch:* ${state.branch}\n\n` +
+          `*(Assalamu Alaikum—I built this live eligibility engine & website audit specifically for ${cfg.name}. Let's connect this to your active Meta ads today!)*`
+        );
+
+        const box = document.getElementById('options-box');
+        box.innerHTML = `
+          <div class="space-y-1.5">
+            <a href="https://wa.me/${cfg.waNumber}?text=${waText}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs py-2.5 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition">
+              <span>📲 Send Pre-Qualified File to Agency WhatsApp</span>
+            </a>
+            <button onclick="switchTab('audit')" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] py-2 rounded-xl transition">
+              🔍 View 3 Website Leaks We Found on Your Site
+            </button>
+          </div>
+        `;
+      }, 350);
+    }
+
+    loadAgency(currentAgency);
+  </script>
+</body>
+        </html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>60-Second AI Eligibility & Funnel Audit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #090d16; }
+    .chat-scroll::-webkit-scrollbar { width: 4px; }
+    .chat-scroll::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+    @keyframes popIn { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .msg-anim { animation: popIn 0.22s ease-out forwards; }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col items-center py-3 px-2.5 select-none">
+
+  <!-- Stealth Executive Header Bar (No Competitor Buttons Visible) -->
+  <div class="w-full max-w-md bg-slate-900/95 border border-slate-800 rounded-2xl p-3 mb-2.5 shadow-xl">
+    <div class="flex items-center justify-between mb-2">
+      <!-- Secret Co-Founder Switch: Double-tap the green dot area to toggle agencies on your own phone -->
+      <div ondblclick="secretToggle()" class="flex items-center gap-2 cursor-pointer" title="Executive Portal">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+        <span id="exec-target-title" class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+          Pacific Global • Dedicated System
+        </span>
+      </div>
+      <span class="text-[10px] font-semibold bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md border border-slate-700">
+        Private Build v2.4
+      </span>
+    </div>
+
+    <!-- 3-Tab Navigation -->
+    <div class="grid grid-cols-3 gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800/80">
+      <button onclick="switchTab('demo')" id="tab-demo" class="py-1.5 text-[11px] font-bold rounded-lg bg-emerald-500 text-slate-950 shadow transition">
+        💬 AI Demo
+      </button>
+      <button onclick="switchTab('audit')" id="tab-audit" class="py-1.5 text-[11px] font-semibold rounded-lg text-slate-300 hover:text-white transition relative">
+        🔍 Funnel Audit
+        <span class="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-extrabold px-1.5 rounded-full">3 Leaks</span>
+      </button>
+      <button onclick="switchTab('crm')" id="tab-crm" class="py-1.5 text-[11px] font-semibold rounded-lg text-slate-300 hover:text-white transition">
+        📋 Live CRM
+      </button>
+    </div>
+  </div>
+
+  <!-- TAB 1: INTERACTIVE STUDENT AI & VOUCHER GENERATOR -->
+  <div id="view-demo" class="w-full max-w-md bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col h-[650px]">
+    <!-- Agency Top Bar -->
+    <div id="brand-header" class="bg-emerald-800 text-white px-4 py-3 flex items-center justify-between shadow-md">
+      <div class="flex items-center gap-2.5">
+        <div class="relative">
+          <div id="brand-avatar" class="w-10 h-10 rounded-full bg-white text-emerald-900 font-extrabold flex items-center justify-center text-sm shadow">
+            PG
+          </div>
+          <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-emerald-800 rounded-full"></span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1">
+            <h1 id="brand-name" class="font-bold text-sm leading-tight">Pacific Global Network</h1>
+            <svg class="w-4 h-4 text-sky-300 fill-current" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>
+          <p id="brand-subtitle" class="text-[10px] text-emerald-100">Automated Eligibility & Appointment Desk</p>
+        </div>
+      </div>
+      <button onclick="resetChat()" class="text-[11px] bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded-lg font-semibold transition">
+        ↻ Reset
+      </button>
+    </div>
+
+    <!-- Active Ad Library Reference Bar -->
+    <div class="bg-amber-50 border-b border-amber-200 px-3 py-1.5 flex items-center justify-between text-[10px] text-amber-900">
+      <span id="ad-id-banner" class="font-semibold truncate">📢 Ad ID: 24054707220838934 (AU, NZ, UK & Canada)</span>
+      <span class="font-extrabold text-emerald-700 shrink-0 ml-2">⚡ Instant Reply</span>
+    </div>
+
+    <!-- Chat Feed -->
+    <div id="chat-box" class="flex-1 p-3.5 overflow-y-auto chat-scroll space-y-3 bg-[#efeae2]"></div>
+
+    <!-- Interactive Decision Buttons -->
+    <div id="options-box" class="p-3 bg-slate-50 border-t border-slate-200 min-h-[96px] flex flex-col justify-center"></div>
+  </div>
+
+  <!-- TAB 2: FORENSIC WEBSITE & AD AUDIT -->
+  <div id="view-audit" class="hidden w-full max-w-md bg-slate-900 text-slate-100 rounded-3xl shadow-2xl border border-slate-800 p-4 space-y-4">
+    <div class="border-b border-slate-800 pb-3">
+      <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+        Confidential Diagnostic Report
+      </span>
+      <h2 id="audit-headline" class="text-base font-extrabold mt-2 text-white">
+        3 Revenue Leaks Found on pacificglobal.com.bd
+      </h2>
+      <p class="text-[11px] text-slate-400 mt-0.5">
+        Why high-intent students clicking your active Meta ads drop off before booking an office visit:
+      </p>
+    </div>
+
+    <!-- Dynamic Audit Cards -->
+    <div id="audit-cards" class="space-y-2.5"></div>
+
+    <!-- Turnkey Fix & ROI Box -->
+    <div class="bg-gradient-to-br from-emerald-950 to-slate-900 border border-emerald-500/40 rounded-2xl p-3.5 space-y-2">
+      <div class="flex justify-between items-center">
+        <div>
+          <p class="text-[10px] uppercase font-bold tracking-wider text-emerald-400">Same-Day Turnkey Deployment</p>
+          <p class="text-xl font-extrabold text-white">20,000 BDT <span class="text-[11px] font-normal text-slate-400">one-time setup</span></p>
+        </div>
+        <div class="text-right">
+          <p class="text-[10px] text-slate-400">Monthly Retainer</p>
+          <p class="text-xs font-bold text-slate-200">30,000 BDT/mo</p>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-300 leading-relaxed">
+        ✅ <strong class="text-white">Zero-Risk Math:</strong> 1 enrolled visa file yields <strong class="text-emerald-300">1,50,000–3,00,000 BDT</strong> in university commission. Saving just 1 lost night-time lead pays for the entire system 10x over.
+      </p>
+      <button onclick="switchTab('demo')" class="w-full mt-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl shadow transition">
+        ⚡ Test Your Live Solution in Tab 1
+      </button>
+    </div>
+  </div>
+
+  <!-- TAB 3: LIVE COUNSELOR CRM / EMS FEED -->
+  <div id="view-crm" class="hidden w-full max-w-md bg-slate-900 text-slate-100 rounded-3xl shadow-2xl border border-slate-800 p-4 space-y-3.5">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div>
+        <h2 id="crm-title" class="text-sm font-extrabold text-white">Live Pre-Qualified Counselor Desk</h2>
+        <p id="crm-subtitle" class="text-[11px] text-slate-400">Auto-filtered leads routed by branch & eligibility score</p>
+      </div>
+      <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full">
+        24/7 Active
+      </span>
+    </div>
+
+    <div id="crm-feed" class="space-y-2.5"></div>
+
+    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-[11px] text-slate-400 leading-relaxed">
+      💡 <strong class="text-slate-200">How this saves counselor hours:</strong> Unqualified inquiries are filtered out automatically. Your senior counselors in <span id="crm-branch-note" class="text-emerald-400 font-semibold">Sylhet & Dhaka</span> only spend time calling verified students who already have a booked slot.
+    </div>
+  </div>
+
+  <script>
+    const agencyData = {
+      pg: {
+        pageTitle: "Pacific Global Network • AI Intake & Audit",
+        execTitle: "Pacific Global • Dedicated System",
+        name: "Pacific Global Network",
+        short: "PG",
+        headerClass: "bg-emerald-800",
+        subtitle: "Chowhatta (Sylhet) & Gulshan-1 (Dhaka) • Online",
+        adBanner: "📢 Ad ID: 24054707220838934 (AU, NZ, UK & Canada)",
+        waNumber: "8801332555033",
+        crmTitle: "Pacific Global Appointment Queue",
+        crmSubtitle: "Direct feed for Manru Shopping City & Florida Castle",
+        branchNote: "Chowhatta (Sylhet) & Gulshan-1 (Dhaka)",
+        countries: [
+          "🇦🇺 Australia (Feb/July Intake + 2-4yr PSW)",
+          "🇬🇧 UK (Fast-Track Admission)",
+          "🇨🇦 Canada / 🇳🇿 New Zealand"
+        ],
+        branches: [
+          "📍 Sylhet (Manru Shopping City, 3rd Fl, Chowhatta)",
+          "📍 Dhaka HQ (Florida Castle, Road 23/A, Gulshan-1)"
+        ],
+        welcome: "Assalamu Alaikum! 👋 Welcome to **Pacific Global Network** (*Your Better Destination Is Our Priority*).\n\nSaw you clicked our **Australia, NZ, UK & Canada** admission ad! Tap below to check your **Tuition & Scholarship Eligibility** and reserve a 1-on-1 counselor slot:",
+        voucherPerk: "GTE/GST Pre-Assessment + PTE/IELTS Waiver Check + Up to 30% Bursary",
+        tuitionNote: "Est. Tuition: AUD $15,000–$33,000/yr (20 hrs/wk work rights + 2–4 yr PSW)",
+        auditHeadline: "3 Conversion Leaks Found on pacificglobal.com.bd",
+        audits: [
+          {
+            title: "1. Broken Gravity Forms Warning on Booking Page",
+            desc: "On pacificglobal.com.bd/book-an-appointment/, visitors currently see an unconfigured plugin notice: 'Next Steps: Install a Payment Add-On... Important: Delete this tip before you publish the form.'",
+            fix: "We replace this today with an instant interactive WhatsApp & Web Eligibility Engine."
+          },
+          {
+            title: "2. Ad Promotes PTE, But Website Form Blocks PTE",
+            desc: "Your active Facebook Ad (ID: 24054707220838934) promotes 'From IELTS/PTE prep to university selection', but your website dropdown only lists IELTS, TOEFL, GRE, GMAT, SAT—missing PTE & MOI completely.",
+            fix: "Full IELTS, PTE, Duolingo & MOI qualification built directly into the 60-second chat."
+          },
+          {
+            title: "3. 'By Appointment Only' Bottleneck After 8 PM",
+            desc: "Your Sylhet WhatsApp desk operates 'By appointment only'. Students clicking ads between 8 PM and 1 AM wait until the next day and book with competing Zindabazar/Chowhatta agencies first.",
+            fix: "24/7 automated qualification locks the student into a confirmed Chowhatta or Gulshan slot in 45 seconds."
+          }
+        ],
+        sampleLeads: [
+          { name: "Tanvir H.", target: "🇦🇺 Australia (Masters)", stats: "CGPA 3.45 • IELTS 6.5", branch: "Sylhet (Chowhatta)", score: "98% Match", time: "2 mins ago" },
+          { name: "Nusrat J.", target: "🇬🇧 UK (Bachelor)", stats: "HSC GPA 5.0 • PTE 58", branch: "Dhaka (Gulshan-1)", score: "94% Match", time: "14 mins ago" },
+          { name: "Sadia R.", target: "🇨🇦 Canada (PG)", stats: "CGPA 3.20 • IELTS 6.0", branch: "Sylhet (Chowhatta)", score: "91% Match", time: "29 mins ago" }
+        ]
+      },
+      ss: {
+        pageTitle: "Study Solutions Ltd • AI Intake & Audit",
+        execTitle: "Study Solutions • Dedicated System",
+        name: "Study Solutions Ltd",
+        short: "SS",
+        headerClass: "bg-blue-900",
+        subtitle: "Official UK University Representative (140+ Partners)",
+        adBanner: "📢 Ad ID: 27820442920957677 (UK Jan 2027 • £10k Scholarship)",
+        waNumber: "8801604006060",
+        crmTitle: "EMS & Centurion Pre-Qualified Feed",
+        crmSubtitle: "Auto-formatted for Al-Hamra (Sylhet) & Banani (Dhaka)",
+        branchNote: "Al-Hamra Level-9 (Sylhet) & Green AR Tower (Banani)",
+        countries: [
+          "🇬🇧 UK Jan 2027 (Up to £10,000 Scholarship)",
+          "🇬🇧 UK with MOI / Dependent Option",
+          "🇦🇺 Australia / 🇨🇦 Canada / 🇺🇸 USA"
+        ],
+        branches: [
+          "📍 Sylhet (Al-Hamra Level-9, Office 916, Zindabazar)",
+          "📍 Dhaka HQ (Green AR Tower, 2nd Fl, Road 4, Banani)"
+        ],
+        welcome: "Assalamu Alaikum! 👋 Welcome to **Study Solutions Ltd** (*Official Representative of 140+ UK Universities*).\n\nChecking your eligibility for the **UK January 2027 Intake**! Tap below to calculate your **Scholarship Tier (up to £10,000)**, **100% BC IELTS Cashback**, and **24–48hr Offer Letter** eligibility:",
+        voucherPerk: "Up to £10,000 Merit Scholarship + 100% BC IELTS Cashback (Graduate-500) + 48hr Offer Letter",
+        tuitionNote: "Verified Partner Route: Ulster, QA, OIEG, Study Group & 140+ UK Universities",
+        auditHeadline: "3 Conversion Leaks Found on study-solutions.com",
+        audits: [
+          {
+            title: "1. Ad Promises Instant Eligibility, Page Gives Static Form",
+            desc: "Your active UK Jan 2027 Ad (ID: 27820442920957677) says '📩 Let's check your eligibility' for £10,000 scholarships. But study-solutions.com/check-your-eligibility/ is a static callback form where students wait hours.",
+            fix: "Students get an instant £10,000 scholarship tier calculation & voucher in 45 seconds."
+          },
+          {
+            title: "2. 'Lorem Ipsum' Placeholder Text Live on Homepage",
+            desc: "On study-solutions.com under 'Why Choose Study Solutions?', both the 'Study on campus' and 'Our Learning Partners' boxes still show raw 'Lorem Ipsum is simply dummy text...' to students and university delegates.",
+            fix: "We clean up your landing funnel today so your brand matches your 10-year PIEoneer finalist reputation."
+          },
+          {
+            title: "3. Unfiltered Leads Clogging EMS & Centurion CRM",
+            desc: "With 100,000+ applications and 550+ staff, counselors lose valuable hours calling unverified Facebook leads who don't meet CGPA or IELTS/MOI criteria.",
+            fix: "Every Meta Ad lead is auto-scored by CGPA, IELTS 4.5–7.0 / MOI, and routed to Al-Hamra Level 9 or Banani."
+          }
+        ],
+        sampleLeads: [
+          { name: "Mahmudul H.", target: "🇬🇧 UK Jan 2027 (Masters)", stats: "CGPA 3.52 • IELTS 6.5", branch: "Sylhet (Al-Hamra #916)", score: "£10k Tier • 99%", time: "1 min ago" },
+          { name: "Farhana A.", target: "🇬🇧 UK Jan 2027 (MOI)", stats: "BBA CGPA 3.18 • MOI Ready", branch: "Dhaka (Banani Block-F)", score: "£6k Tier • 95%", time: "9 mins ago" },
+          { name: "Rafiqul I.", target: "🇬🇧 UK Foundation/UG", stats: "HSC GPA 4.80 • IELTS 5.5", branch: "Sylhet (Al-Hamra #916)", score: "Eligible • 92%", time: "22 mins ago" }
+        ]
+      }
+    };
+
+    // Determine agency from URL (?id=ss or ?id=pg) or saved localStorage lock
+    const params = new URLSearchParams(window.location.search);
+    const urlId = params.get('id') || params.get('agency');
+    let currentAgency = localStorage.getItem('locked_agency') || 'pg';
+
+    if (urlId === 'ss' || urlId === 'studysolutions') {
+      currentAgency = 'ss';
+      localStorage.setItem('locked_agency', 'ss');
+    } else if (urlId === 'pg' || urlId === 'pacific') {
+      currentAgency = 'pg';
+      localStorage.setItem('locked_agency', 'pg');
+    }
+
+    let state = { country: '', degree: '', english: '', branch: '' };
+
+    // Hidden co-founder toggle (double tap top-left green dot)
+    function secretToggle() {
+      currentAgency = currentAgency === 'pg' ? 'ss' : 'pg';
+      localStorage.setItem('locked_agency', currentAgency);
+      loadAgency(currentAgency);
+    }
+
+    function switchTab(tab) {
+      ['demo', 'audit', 'crm'].forEach(t => {
+        document.getElementById('view-' + t).classList.toggle('hidden', t !== tab);
+        const btn = document.getElementById('tab-' + t);
+        btn.className = t === tab
+          ? 'py-1.5 text-[11px] font-bold rounded-lg bg-emerald-500 text-slate-950 shadow transition relative'
+          : 'py-1.5 text-[11px] font-semibold rounded-lg text-slate-300 hover:text-white transition relative';
+      });
+    }
+
+    function loadAgency(key) {
+      const cfg = agencyData[key];
+      document.title = cfg.pageTitle;
+      document.getElementById('exec-target-title').innerText = cfg.execTitle;
+      document.getElementById('brand-name').innerText = cfg.name;
+      document.getElementById('brand-avatar').innerText = cfg.short;
+      document.getElementById('brand-header').className = `${cfg.headerClass} text-white px-4 py-3 flex items-center justify-between shadow-md`;
+      document.getElementById('brand-subtitle').innerText = cfg.subtitle;
+      document.getElementById('ad-id-banner').innerText = cfg.adBanner;
+      document.getElementById('audit-headline').innerText = cfg.auditHeadline;
+      document.getElementById('crm-title').innerText = cfg.crmTitle;
+      document.getElementById('crm-subtitle').innerText = cfg.crmSubtitle;
+      document.getElementById('crm-branch-note').innerText = cfg.branchNote;
+
+      renderAuditCards(cfg);
+      renderCrmFeed(cfg);
+      resetChat();
+    }
+
+    function renderAuditCards(cfg) {
+      document.getElementById('audit-cards').innerHTML = cfg.audits.map(a => `
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-rose-400">${a.title}</h3>
+            <span class="text-[9px] bg-rose-500/10 text-rose-300 px-2 py-0.5 rounded font-semibold">Live Issue</span>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-relaxed">${a.desc}</p>
+          <p class="text-[11px] text-emerald-400 font-medium pt-1 border-t border-slate-900">✓ Fix: ${a.fix}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderCrmFeed(cfg) {
+      document.getElementById('crm-feed').innerHTML = cfg.sampleLeads.map(l => `
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 flex items-center justify-between">
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-xs text-white">${l.name}</span>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-full">${l.score}</span>
+            </div>
+            <p class="text-[11px] text-slate-300 font-medium">${l.target} • ${l.stats}</p>
+            <p class="text-[10px] text-slate-500">📍 ${l.branch} • ${l.time}</p>
+          </div>
+          <a href="https://wa.me/${cfg.waNumber}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-2 rounded-xl shrink-0">
+            WhatsApp ↗
+          </a>
+        </div>
+      `).join('');
+    }
+
+    function appendMessage(sender, htmlContent) {
+      const box = document.getElementById('chat-box');
+      const div = document.createElement('div');
+      const formatted = htmlContent
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+
+      if (sender === 'bot') {
+        div.className = 'msg-anim flex justify-start';
+        div.innerHTML = `<div class="bg-white text-slate-800 text-xs p-3 rounded-2xl rounded-tl-none shadow-sm max-w-[88%] leading-relaxed border border-slate-100">${formatted}<div class="text-[9px] text-slate-400 text-right mt-1">AI Intake Engine • Verified</div></div>`;
+      } else {
+        div.className = 'msg-anim flex justify-end';
+        div.innerHTML = `<div class="bg-[#d9fdd3] text-slate-900 text-xs p-2.5 px-3 rounded-2xl rounded-tr-none shadow-sm max-w-[82%] font-semibold">${formatted}<div class="text-[9px] text-emerald-700 text-right mt-0.5">Just now ✓✓</div></div>`;
+      }
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function renderOptions(buttons) {
+      const box = document.getElementById('options-box');
+      box.innerHTML = '<p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 text-center">👇 Tap an option to test the live qualification:</p>';
+      const wrap = document.createElement('div');
+      wrap.className = 'flex flex-wrap gap-1.5 justify-center';
+      buttons.forEach(b => {
+        const btn = document.createElement('button');
+        btn.className = 'bg-white hover:bg-emerald-50 text-slate-900 border border-emerald-400 font-semibold text-[11px] px-3 py-2 rounded-xl shadow-sm transition active:scale-95';
+        btn.innerText = b.label;
+        btn.onclick = b.onClick;
+        wrap.appendChild(btn);
+      });
+      box.appendChild(wrap);
+    }
+
+    function resetChat() {
+      state = { country: '', degree: '', english: '', branch: '' };
+      document.getElementById('chat-box').innerHTML = '';
+      const cfg = agencyData[currentAgency];
+      appendMessage('bot', cfg.welcome);
+      renderOptions(cfg.countries.map(c => ({
+        label: c,
+        onClick: () => stepDegree(c)
+      })));
+    }
+
+    function stepDegree(country) {
+      state.country = country;
+      appendMessage('user', country);
+      setTimeout(() => {
+        appendMessage('bot', `Got it! What is your **latest completed qualification & CGPA/GPA**?`);
+        renderOptions([
+          { label: "🎓 Bachelor Complete (CGPA 3.2 - 3.8+)", onClick: () => stepEnglish("Bachelor Complete (CGPA 3.2+)") },
+          { label: "📘 HSC / A-Level Complete (GPA 4.5 - 5.0)", onClick: () => stepEnglish("HSC Complete (GPA 4.5+)") },
+          { label: "📙 Bachelor / HSC (CGPA 2.6 - 3.1)", onClick: () => stepEnglish("Bachelor/HSC (2.6 - 3.1)") }
+        ]);
+      }, 300);
+    }
+
+    function stepEnglish(degree) {
+      state.degree = degree;
+      appendMessage('user', degree);
+      setTimeout(() => {
+        appendMessage('bot', `What is your current **IELTS / PTE / MOI status**?`);
+        renderOptions([
+          { label: "✅ IELTS 6.0 - 6.5+ Ready", onClick: () => stepBranch("IELTS 6.0 - 6.5+ Ready") },
+          { label: "🎯 PTE 55+ / Duolingo 105+ Ready", onClick: () => stepBranch("PTE / Duolingo Ready") },
+          { label: "📄 Apply with MOI / Need IELTS Cashback Prep", onClick: () => stepBranch("MOI / IELTS Prep Required") }
+        ]);
+      }, 300);
+    }
+
+    function stepBranch(english) {
+      state.english = english;
+      appendMessage('user', english);
+      const cfg = agencyData[currentAgency];
+      setTimeout(() => {
+        appendMessage('bot', `🎉 **Instant Assessment Complete: PRE-QUALIFIED!**\n\nSelect your preferred **${cfg.name}** branch to generate your Priority Scholarship & Spot-Assessment Pass:`);
+        renderOptions(cfg.branches.map(b => ({
+          label: b,
+          onClick: () => stepFinal(b)
+        })));
+      }, 350);
+    }
+
+    function stepFinal(branch) {
+      state.branch = branch;
+      appendMessage('user', branch);
+      const cfg = agencyData[currentAgency];
+      const code = (currentAgency === 'pg' ? 'PG-SYL-' : 'SS-JAN27-') + Math.floor(1000 + Math.random() * 9000);
+
+      setTimeout(() => {
+        const voucherHtml = `
+          <div class="bg-emerald-950 text-white p-3 rounded-xl border border-emerald-500/50 space-y-1.5 mt-1">
+            <div class="flex justify-between items-center border-b border-emerald-800 pb-1">
+              <span class="text-[10px] uppercase font-extrabold text-emerald-400">Priority Eligibility Pass</span>
+              <span class="text-[10px] font-mono bg-emerald-500 text-slate-950 font-bold px-1.5 py-0.5 rounded">${code}</span>
+            </div>
+            <p class="text-[11px] font-bold text-emerald-200">${cfg.voucherPerk}</p>
+            <p class="text-[10px] text-slate-300">• <strong>Route:</strong> ${state.country}</p>
+            <p class="text-[10px] text-slate-300">• <strong>Profile:</strong> ${state.degree} | ${state.english}</p>
+            <p class="text-[10px] text-slate-300">• <strong>Office:</strong> ${state.branch}</p>
+            <p class="text-[9px] text-emerald-400 pt-1">${cfg.tuitionNote}</p>
+          </div>
+        `;
+        appendMessage('bot', `✅ **Your Priority Counseling Slot & Eligibility Voucher is Ready!**${voucherHtml}`);
+
+        const waText = encodeURIComponent(
+          `🔥 *PRE-QUALIFIED STUDENT FILE (${cfg.name})*\n` +
+          `🎟 *Voucher ID:* ${code}\n` +
+          `• *Target:* ${state.country}\n` +
+          `• *Academic:* ${state.degree}\n` +
+          `• *English:* ${state.english}\n` +
+          `• *Branch:* ${state.branch}\n\n` +
+          `*(Assalamu Alaikum—I built this live eligibility engine & website audit specifically for ${cfg.name}. Let's connect this to your active Meta ads today!)*`
+        );
+
+        const box = document.getElementById('options-box');
+        box.innerHTML = `
+          <div class="space-y-1.5">
+            <a href="https://wa.me/${cfg.waNumber}?text=${waText}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs py-2.5 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition">
+              <span>📲 Send Pre-Qualified File to Agency WhatsApp</span>
+            </a>
+            <button onclick="switchTab('audit')" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] py-2 rounded-xl transition">
+              🔍 View 3 Website Leaks We Found on Your Site
+            </button>
+          </div>
+        `;
+      }, 350);
+    }
+
+    loadAgency(currentAgency);
+  </script>
+</body>
+  </html>
